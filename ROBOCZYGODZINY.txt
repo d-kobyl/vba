@@ -1,0 +1,32 @@
+Function ROBOCZYGODZINY(startTime As Date, endTime As Date) As Double
+    Dim totalHours As Double
+    Dim currentTime As Date
+    Dim dayStart As Date
+    Dim dayEnd As Date
+    Dim actualStart As Date
+    Dim actualEnd As Date
+
+    totalHours = 0
+    currentTime = startTime
+
+    Do While currentTime < endTime
+        ' Pomijaj weekendy (sobota = 7, niedziela = 1)
+        If Weekday(currentTime, vbMonday) <= 5 Then
+            dayStart = DateValue(currentTime) + TimeValue("08:00:00")
+            dayEnd = DateValue(currentTime) + TimeValue("16:00:00")
+
+            actualStart = WorksheetFunction.Max(currentTime, dayStart)
+            actualEnd = WorksheetFunction.Min(endTime, dayEnd)
+
+            If actualStart < actualEnd Then
+                totalHours = totalHours + (actualEnd - actualStart) * 24
+            End If
+        End If
+
+        ' Przejdź do następnego dnia roboczego o 08:00
+        currentTime = DateAdd("d", 1, DateValue(currentTime) + TimeValue("08:00:00"))
+    Loop
+
+    ROBOCZYGODZINY = Round(totalHours, 2)
+End Function
+``
