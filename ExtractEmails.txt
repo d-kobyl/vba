@@ -1,0 +1,24 @@
+
+Function ExtractEmails(ByVal inputText As String) As String
+    Dim regex As Object
+    Dim matches As Object
+    Dim i As Integer
+    Dim result As String
+    
+    ' Utworzenie obiektu RegExp
+    Set regex = CreateObject("VBScript.RegExp")
+    regex.Pattern = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
+    regex.Global = True
+    
+    ' Znajdź wszystkie dopasowania
+    Set matches = regex.Execute(inputText)
+    
+    ' Zbuduj wynik
+    result = ""
+    For i = 0 To matches.Count - 1
+        If result <> "" Then result = result & ", "
+        result = result & matches(i).Value
+    Next i
+    
+    ExtractEmails = result
+End Function
