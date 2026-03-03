@@ -1,0 +1,42 @@
+Sub ImportEmlContent()
+    Dim iMsg As New CDO.Message
+    Dim iStm As New ADODB.Stream
+    Dim filePath As String
+    
+    ' Ścieżka do Twojego pliku .eml
+    filePath = "C:\Twoja\Sciezka\mail.eml"
+    
+    ' Konfiguracja Streamu ADO do odczytu pliku
+    With iStm
+        .Charset = "utf-8" ' Ustaw kodowanie (często wymagane dla polskich znaków)
+        .Open
+        .LoadFromFile filePath
+    End With
+    
+    ' Załadowanie treści streamu do obiektu wiadomości CDO
+    With iMsg
+        .DataSource.OpenObject iStm, "_Stream"
+        
+        ' Wyświetlenie danych w oknie Immediate (Ctrl+G)
+        Debug.Print "Od: " & .From
+        Debug.Print "Do: " & .To
+        Debug.Print "Temat: " & .Subject
+        Debug.Print "Data: " & .SentOn
+        
+        ' Wybierz format treści: TextBody lub HTMLBody
+        Debug.Print "Treść: " & .TextBody
+        
+        ' Przykład wpisania do Excela
+        Cells(1, 1).Value = "Temat:"
+        Cells(1, 2).Value = .Subject
+        Cells(2, 1).Value = "Treść:"
+        Cells(2, 2).Value = .TextBody
+    End With
+    
+    ' Sprzątanie
+    iStm.Close
+    Set iStm = Nothing
+    Set iMsg = Nothing
+    
+    MsgBox "Plik został pomyślnie wczytany!", vbInformation
+End Sub
